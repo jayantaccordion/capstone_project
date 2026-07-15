@@ -1,5 +1,0 @@
-{% macro create_external_table(table_name, data_source) %}
-    create or replace external table {{ table_name }}
-    WITH LOCATION = @AZURE_RAW_BLOB_STAGE/Capstone_Project_Data/'{{ data_source }}'
-    FILE_FORMAT = (TYPE = JSON);
-{% endmacro %}

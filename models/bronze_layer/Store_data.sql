@@ -1,5 +1,5 @@
-{{ create_external_table('customer_ext', 'customer_data') }}
-
+{{ create_external_table('store_ext', 'store_data') }}
+ 
 {{
     config(
         materialized='incremental',
@@ -15,7 +15,7 @@ select
     value:updated_at::timestamp         as file_last_modified,
     value                               as raw_json_payload
  
-from AZURE_RAW.customer_ext
+from {{ source('AZUR_RAW', 'store_ext') }}
  
 {% if is_incremental() %}
   where value:updated_at::timestamp > (select max(file_last_modified) from {{ this }})

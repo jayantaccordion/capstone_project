@@ -1,4 +1,3 @@
-{{ create_external_table('customer_ext', 'customer_data') }}
 
 {{
     config(
@@ -7,6 +6,8 @@
         incremental_strategy='merge'
     )
 }}
+
+{{ create_external_table('orders_ext', 'orders_data') }}
  
 select
     metadata$filename                   as _source_file,
@@ -15,7 +16,7 @@ select
     value:updated_at::timestamp         as file_last_modified,
     value                               as raw_json_payload
  
-from AZURE_RAW.customer_ext
+from {{ source('AZURE_RAW', 'orders_ext') }}
  
 {% if is_incremental() %}
   where value:updated_at::timestamp > (select max(file_last_modified) from {{ this }})
