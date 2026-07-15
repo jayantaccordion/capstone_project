@@ -1,0 +1,12 @@
+version: 2
+
+sources:
+  - name: AZURE_RAW
+    database: CT_JAYANT_PANDEY_DB
+    schema: AZURE_RAW
+    tables:
+      - name: orders_ext
+      - name: store_ext
+      - name: customer_ext
+      - name: product_ext
+      - name: employee_ext

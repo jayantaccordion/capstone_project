@@ -1,12 +1,3 @@
-
-{{
-    config(
-        materialized='incremental',
-        unique_key='_source_file',
-        incremental_strategy='merge'
-    )
-}}
-
 {{ create_external_table('orders_ext', 'orders_data') }}
  
 select
@@ -16,7 +7,7 @@ select
     value:updated_at::timestamp         as file_last_modified,
     value                               as raw_json_payload
  
-from {{ source('AZURE_RAW', 'orders_ext') }}
+from AZURE_RAW.orders_ext
  
 {% if is_incremental() %}
   where value:updated_at::timestamp > (select max(file_last_modified) from {{ this }})

@@ -41,4 +41,6 @@ models:
     bronze_layer:
       +schema: bronze_layer
       +materialized: 'incremental'
+      +unique_key: '_source_file'
+      +incremental_strategy: 'merge'
    

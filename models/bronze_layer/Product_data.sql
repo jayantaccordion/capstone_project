@@ -1,13 +1,5 @@
 {{ create_external_table('product_ext', 'product_data') }}
- 
-{{
-    config(
-        materialized='incremental',
-        unique_key='_source_file',
-        incremental_strategy='merge'
-    )
-}}
- 
+
 select
     metadata$filename                   as _source_file,
     current_timestamp()::timestamp_ntz   as _loaded_at,

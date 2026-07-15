@@ -1,12 +1,4 @@
 {{ create_external_table('customer_ext', 'customer_data') }}
-
-{{
-    config(
-        materialized='incremental',
-        unique_key='_source_file',
-        incremental_strategy='merge'
-    )
-}}
  
 select
     metadata$filename                   as _source_file,
