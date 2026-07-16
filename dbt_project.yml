@@ -43,4 +43,8 @@ models:
       +materialized: 'incremental'
       +unique_key: '_source_file'
       +incremental_strategy: 'merge'
+
+    silver_layer:
+      +schema: silver_layer
+      +materialized: table
    

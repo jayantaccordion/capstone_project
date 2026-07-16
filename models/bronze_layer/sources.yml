@@ -11,7 +11,7 @@ sources:
           count: 1
           period: day
         error_after:
-          count: 2
+          count: 135
           period: day
     tables:
       - name: orders_ext
@@ -25,6 +25,6 @@ sources:
               count: 10
               period: day
             error_after:
-              count: 12
+              count: 200
               period: day
       - name: employee_ext
