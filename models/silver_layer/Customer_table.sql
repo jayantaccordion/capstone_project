@@ -1,32 +1,42 @@
 with flattened_table as(
     select
-        cust.value:customer_id::string                as customer_id,
-        cust.value:first_name::string                 as first_name,
-        cust.value:last_name::string                  as last_name,
-        cust.value:email::string                      as email,
-        cust.value:phone::string                      as phone,
-        cust.value:birth_date::string                 as birth_date,
-        cust.value:last_modified_date::string         as last_modified_date,
-        cust.value:registration_date::varchar         as reg_date,
-        cust.value:last_purchase_date::string         as last_purchase_date,
-        cust.value:income_bracket::string             as income_bracket,
-        cust.value:loyalty_tier::string               as loyalty_tier,
-        cust.value:total_purchases::integer           as total_purchases,
-        cust.value:total_spend::integer               as total_spend,
-        cust.value:marketing_opt_in::boolean          as marketing_opt_in,
-        cust.value:occupation::string                 as occupation,
-        cust.value:preferred_payment_method::string   as preferred_payment_method,
-        cust.value:preferred_communication::string    as preferred_communication,
+        cust_json:customer_id::string                as customer_id,
+        cust_json:first_name::string                 as first_name,
+        cust_json:last_name::string                  as last_name,
+        cust_json:email::string                      as email,
+        cust_json:phone::string                      as phone,
+        cust_json:birth_date::string                 as birth_date,
+        cust_json:last_modified_date::string         as last_modified_date,
+        cust_json:registration_date::varchar         as reg_date,
+        cust_json:last_purchase_date::string         as last_purchase_date,
+        cust_json:income_bracket::string             as income_bracket,
+        cust_json:loyalty_tier::string               as loyalty_tier,
+        cust_json:total_purchases::integer           as total_purchases,
+        cust_json:total_spend::integer               as total_spend,
+        cust_json:marketing_opt_in::boolean          as marketing_opt_in,
+        cust_json:occupation::string                 as occupation,
+        cust_json:preferred_payment_method::string   as preferred_payment_method,
+        cust_json:preferred_communication::string    as preferred_communication,
 
-        cust.value:address.city::string               as city,
-        cust.value:address.state::string              as state,
-        cust.value:address.country::string            as country,
-        cust.value:address.street::string             as street,
-        cust.value:address.zip_code::string           as zip_code,
+        cust_json:address.city::string               as city,
+        cust_json:address.state::string              as state,
+        cust_json:address.country::string            as country,
+        cust_json:address.street::string             as street,
+        cust_json:address.zip_code::string           as zip_code,
 
-        _loaded_at
-    from {{ ref('Customers_data') }},
-    lateral flatten(input => raw_json_payload:customers_data) cust
+        _loaded_at,
+
+        dbt_valid_from as valid_from,
+        coalesce(
+            dbt_valid_to,
+            '9999-12-31'::timestamp
+        ) as valid_to,
+        case
+            when dbt_valid_to is null then true
+            else false
+        end as is_current
+
+    from {{ ref('Customer_snap') }}
     where customer_id is not null
 ),
 
@@ -34,42 +44,30 @@ cleaned_and_cast as (
     select
         customer_id,
        
-        -- Trim whitespace + Standardize capitalization
         coalesce(initcap(trim(first_name)), 'Unknown') as first_name,
         coalesce(initcap(trim(last_name)), 'Unknown') as last_name,
        
-        -- Create a full_name column
-        concat(
-            coalesce(initcap(trim(first_name)), 'Unknown'),
-            ' ',
-            coalesce(initcap(trim(last_name)), 'Unknown')
-        ) as full_name,
+        {{ full_name('first_name', 'last_name') }} as full_name,
        
-        -- Validate and clean Email_Id, flagging and falling back for invalid values
         email as raw_email,
-        {{ clean_email('email') }} as email_cleaned,
+        {{ clean_email('email') }} as email,
         case
             when {{ clean_email('email') }} rlike 'unknown@email.com' then false
             else true
         end 
         as is_email_valid,
  
-        -- Validate and clean Phn_No, flagging and falling back for invalid values
         phone as raw_phone,
-        coalesce(
-            regexp_replace(phone, '[^0-9]', ''),
-            '0000000000') as phone_cleaned,
+        {{ clean_phone('raw_phone')}} as phone,
         case
-            when length(regexp_replace(phone, '[^0-9]', '')) >= 10 then true
-            else false
-        end    
+            when {{ clean_email('phone') }} is null then false
+            else true
+        end 
         as is_phone_valid,
  
-        -- Dates
         {{ standardize_date('reg_date') }}        as registration_date,
         {{ standardize_date('birth_date') }}      as birth_date,
 
-        -- Calculate customer age from birth_date, falling back to -1 if birth_date is null
         CASE
             WHEN YEAR({{ standardize_date('birth_date') }}) = 1900 THEN -1
             ELSE DATEDIFF(
@@ -79,10 +77,8 @@ cleaned_and_cast as (
             ) - 1
         END AS customer_age,
  
-        -- Categorical mapping defaults
         coalesce(upper(trim(loyalty_tier)), 'STANDARD') as loyalty_tier,
  
-        -- Standardize address format with defaults
         coalesce(initcap(trim(street)), 'Unknown Street') as street,
         coalesce(initcap(trim(city)), 'Unknown City')     as city,
         coalesce(upper(trim(state)), 'NA')                as state,
@@ -90,11 +86,14 @@ cleaned_and_cast as (
         coalesce(upper(trim(country)), 'UNKNOWN')         as country,
         coalesce(total_purchases, 0)                          as total_purchases,
  
-        -- Currency parsing rule with fallback
         {{ clean_currency('total_spend') }} as total_spend_usd,
  
         coalesce(marketing_opt_in, false) as marketing_opt_in,
-        _loaded_at
+        _loaded_at,
+        valid_from,
+        valid_to,
+        is_current
+
     from flattened_table
 ),
 segmented_data as (
@@ -110,6 +109,9 @@ segmented_data as (
     from cleaned_and_cast
 )
  
--- Final Deduplication based on the natural key (customer_id)
 SELECT *
 FROM segmented_data
+qualify row_number() over (
+    partition by customer_id
+    order by _loaded_at desc
+) = 1

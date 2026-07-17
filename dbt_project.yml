@@ -24,7 +24,6 @@ clean-targets:         # directories to be removed by `dbt clean`
   - "target"
   - "dbt_packages"
 
-
 # Configuring models
 # Full documentation: https://docs.getdbt.com/docs/configuring-models
 
@@ -47,4 +46,15 @@ models:
     silver_layer:
       +schema: silver_layer
       +materialized: table
+
+    gold_layer:
+      +schema: gold_layer
+      +materialized: table
+
+snapshots:
+  capstone_project:
+    +schema: snapshot
+    +strategy: timestamp
+    +invalidate_hard_deletes: true
+    +updated_at: 'file_last_modified'
    
