@@ -1,0 +1,95 @@
+version: 2
+
+snapshots:
+  - name: Customer_snap
+    description: "Snapshot of customer records."
+    columns:
+      - name: customer_id
+        description: "Unique identifier for the customer."
+
+      - name: cust_json
+        description: "Raw customer JSON object."
+
+      - name: _SOURCE_FILE
+        description: "Source file from which the record was loaded."
+
+      - name: _LOADED_AT
+        description: "Timestamp when the record was ingested."
+
+      - name: _BATCH_ID
+        description: "dbt invocation batch identifier."
+
+      - name: FILE_LAST_MODIFIED
+        description: "Last modified timestamp of the source file."
+
+  - name: Employee_snap
+    description: "Snapshot of employee records."
+    columns:
+      - name: employee_id
+        description: "Unique identifier for the customer."
+
+      - name: emp_json
+        description: "Raw employee JSON object."
+
+      - name: _SOURCE_FILE
+        description: "Source file from which the record was loaded."
+
+      - name: _LOADED_AT
+        description: "Timestamp when the record was ingested."
+
+      - name: _BATCH_ID
+        description: "dbt invocation batch identifier."
+
+  - name: Product_snap
+    description: "Snapshot of product records."
+    columns:
+      - name: product_id
+        description: "Unique identifier for the product."
+
+      - name: prd_json
+        description: "Raw product JSON object."
+
+      - name: _SOURCE_FILE
+        description: "Source file from which the record was loaded."
+
+      - name: _LOADED_AT
+        description: "Timestamp when the record was ingested."
+
+      - name: _BATCH_ID
+        description: "dbt invocation batch identifier."
+
+  - name: Store_snap
+    description: "Snapshot of store records."
+    columns:
+      - name: store_id
+        description: "Unique identifier for the store."
+
+      - name: sto_json
+        description: "Raw store JSON object."
+
+      - name: _SOURCE_FILE
+        description: "Source file from which the record was loaded."
+
+      - name: _LOADED_AT
+        description: "Timestamp when the record was ingested."
+
+      - name: _BATCH_ID
+        description: "dbt invocation batch identifier."
+
+  - name: Order_snap
+    description: "Snapshot of order records."
+    columns:
+      - name: order_id
+        description: "Unique identifier for the order."
+
+      - name: ord_json
+        description: "Raw order JSON object."
+
+      - name: _SOURCE_FILE
+        description: "Source file from which the record was loaded."
+
+      - name: _LOADED_AT
+        description: "Timestamp when the record was ingested."
+
+      - name: _BATCH_ID
+        description: "dbt invocation batch identifier."

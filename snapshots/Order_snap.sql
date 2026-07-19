@@ -18,11 +18,8 @@ with flattened as (
     lateral flatten(input => raw_json_payload:orders_data) ord
 )
  
-select * from flattened
-qualify row_number() over (
-    partition by order_id
-    order by FILE_LAST_MODIFIED desc, _LOADED_AT desc
-) = 1
+select * 
+from flattened
  
 {% endsnapshot %}
  

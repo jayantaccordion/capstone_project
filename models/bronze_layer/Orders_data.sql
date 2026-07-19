@@ -2,9 +2,9 @@
  
 select
     metadata$filename                   as _source_file,
-    current_timestamp()::timestamp_ntz   as _loaded_at,
+    current_timestamp()::timestamp_ntz  as _loaded_at,
     '{{ invocation_id }}'               as _batch_id,
-    VALUE:updated_at::TIMESTAMP        as file_last_modified,
+    VALUE:updated_at::TIMESTAMP         as file_last_modified,
     value                               as raw_json_payload
  
 from {{ source('AZURE_RAW', 'orders_ext') }}

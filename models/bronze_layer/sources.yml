@@ -14,10 +14,14 @@ sources:
           count: 135
           period: day
     tables:
-      - name: orders_ext
-      - name: store_ext
       - name: customer_ext
+        description: "External table for customer JSON data."
+      - name: employee_ext
+        description: "External table for employee JSON data."
+      - name: orders_ext
+        description: "External table for orders JSON data."
       - name: product_ext
+        description: "External table for product JSON data."
         config:
           loaded_at_field: METADATA$FILE_LAST_MODIFIED
           freshness:
@@ -27,4 +31,5 @@ sources:
             error_after:
               count: 200
               period: day
-      - name: employee_ext
+      - name: store_ext
+        description: "External table for store JSON data."
