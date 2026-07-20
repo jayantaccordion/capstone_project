@@ -7,14 +7,14 @@
  
 with flattened as (
     select
+        file_last_modified,
+        _loaded_at,
+        _batch_id,
+        _source_file,
         sto.value:store_id::varchar as store_id,
-        sto.value as sto_json,
-        _SOURCE_FILE,
-        _LOADED_AT,
-        _BATCH_ID,
-        FILE_LAST_MODIFIED
+        sto.value as sto_json
 
-    from {{ ref('Store_data') }},
+    from {{ ref('Bronze_store_data') }},
     lateral flatten(input => raw_json_payload:stores_data) sto
 )
  

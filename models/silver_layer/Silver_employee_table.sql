@@ -53,7 +53,7 @@ cleaned_and_cast as (
         -- Dates
         {{ standardize_date('hire_date')}} as hire_date,
         CASE
-            WHEN YEAR({{ standardize_date('hire_date') }}) = 1900 THEN -1
+            WHEN {{ standardize_date('hire_date') }} = Null THEN null
             ELSE DATEDIFF(
                 year,
                 {{ standardize_date('hire_date') }},
@@ -65,10 +65,10 @@ cleaned_and_cast as (
 
         --Role and Performance
         case
-            when lower(trim({{ 'role' }})) = 'Sales Associate' then 'Associate'
-            when lower(trim({{ 'role' }})) = 'Store Manager' then 'Manager'
-            when lower(trim({{ 'role' }})) = 'Senior Manager' then 'Senior Manager'
-            else lower(trim({{ 'role' }}))
+            when lower(trim({{ 'role' }})) = 'sales associate' then 'Associate'
+            when lower(trim({{ 'role' }})) = 'store manager' then 'Manager'
+            when lower(trim({{ 'role' }})) = 'senior manager' then 'Senior Manager'
+            else 'Unknown'
         end
         as job_role,
         performance_rating,
@@ -105,7 +105,7 @@ employee_order_metrics as (
         count(distinct order_id) as orders_processed,
         sum(total_amount) as total_sales_amount
 
-    from {{ ref('Orders_table') }}
+    from {{ ref('Silver_orders_table') }}
     group by employee_id
 ),
 

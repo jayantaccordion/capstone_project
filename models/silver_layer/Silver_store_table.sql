@@ -38,10 +38,10 @@ cleaned_and_cast as (
         store_id,
        
         -- Attribute
-        coalesce(replace(initcap(trim(store_name)), ' ', ''), 'UnknownStore') as store_name,
-        coalesce(initcap(trim(store_type)), 'Standard') as store_type,
-        coalesce(upper(trim(region)), 'UNKNOWN')        as region,
-        coalesce(upper(trim(manager_id)), 'UNKNOWN_MGR') as manager_id,
+        coalesce(replace(initcap(trim(store_name)), ' ', ''), 'NA') as store_name,
+        coalesce(initcap(trim(store_type)), 'NA') as store_type,
+        coalesce(upper(trim(region)), 'NA')        as region,
+        coalesce(upper(trim(manager_id)), 'NA') as manager_id,
         coalesce(is_active, false)                           as is_active,
         {{ standardize_date('opening_date')}} as opening_date,
         {{ clean_email('email') }} as email_cleaned,

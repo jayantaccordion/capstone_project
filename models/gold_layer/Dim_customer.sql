@@ -18,4 +18,4 @@ select
     valid_to,
     is_current
 
-from {{ ref('Customer_table') }}
+from {{ ref('Silver_customer_table') }}

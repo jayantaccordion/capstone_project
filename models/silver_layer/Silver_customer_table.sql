@@ -55,7 +55,6 @@ cleaned_and_cast as (
         {{ full_name('first_name', 'last_name') }} as full_name,
        
        --Email Validation
-        email as raw_email,
         {{ clean_email('email') }} as email,
         case
             when {{ clean_email('email') }} is not null
@@ -64,8 +63,7 @@ cleaned_and_cast as (
         end as is_email_valid,
  
         --Phone Validation
-        phone as raw_phone,
-        {{ clean_phone('raw_phone')}} as phone,
+        {{ clean_phone('phone')}} as phone,
         case
             when {{ clean_email('phone') }} is not null
             then true
@@ -89,7 +87,7 @@ cleaned_and_cast as (
         coalesce(initcap(trim(street)), 'Unknown Street') as street,
         coalesce(initcap(trim(city)), 'Unknown City')     as city,
         coalesce(upper(trim(state)), 'NA')                as state,
-        coalesce(trim(zip_code), '00000')                 as zip_code,
+        coalesce(trim(zip_code), 'NA')                 as zip_code,
         coalesce(upper(trim(country)), 'UNKNOWN')         as country,
  
         -- Customer Measure
@@ -108,11 +106,11 @@ segmented_data as (
     select
         *,
         CASE
-            WHEN YEAR(birth_date) = 1900 THEN -1
+            WHEN birth_date=NULL THEN NULL
             ELSE DATEDIFF(year, birth_date, CURRENT_DATE()) - 1
         END AS customer_age,
         case
-            when YEAR({{ standardize_date('birth_date') }}) = 1900 then 'Unknown'
+            when {{ standardize_date('birth_date') }} = NULL then 'Unknown'
             when customer_age between 18 and 35 then 'Young'
             when customer_age between 36 and 55 then 'Middle-aged'
             when customer_age >= 56             then 'Senior'

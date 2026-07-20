@@ -11,4 +11,4 @@ select
     cost_price,
     supplier_id
 
-from {{ ref('Product_table') }}
+from {{ ref('Silver_product_table') }}

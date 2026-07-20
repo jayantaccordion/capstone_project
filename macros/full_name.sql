@@ -8,6 +8,6 @@
             ),
             ''
         ),
-        'Unknown'
+        'NA'
     )
 {% endmacro %}

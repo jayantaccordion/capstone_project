@@ -7,7 +7,7 @@ with final_order_table as (
         itm.cost_price,
         itm.item_discount_amount,
 
-        sum(itm.quantity * itm.unit_price * (1 - itm.item_discount_amount/100))
+        sum(itm.quantity * itm.unit_price * (100 - itm.item_discount_amount))
         over(partition by ord.order_id) 
         as line_revenue,
 
@@ -35,8 +35,8 @@ with final_order_table as (
         over(partition by ord.order_id) 
         as total_discount
 
-    from {{ ref('Order_table')}} ord
-    left join {{ ref('Order_items_table')}} itm
+    from {{ ref('Silver_order_table')}} ord
+    left join {{ ref('Silver_items_table')}} itm
         on ord.order_id = itm.order_id
 ),
 
@@ -44,7 +44,7 @@ profit_metrics as (
     select *,
         (
             line_revenue
-            * (1 - orders_discount_amount/100)
+            * (100 - orders_discount_amount)
             - line_cost
             - shipping_cost
             - tax_amount

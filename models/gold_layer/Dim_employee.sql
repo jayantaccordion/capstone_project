@@ -9,6 +9,7 @@ select
     phone,
     target_achievement_percentage,
     orders_processed,
-    total_sales_amount
+    total_sales_amount,
+    performance_rating
 
-from {{ ref('Employee_table') }}
+from {{ ref('Silver_employee_table') }}

@@ -20,11 +20,11 @@ select
 
     ord.shipping_cost,
     (
-        (ord.quantity * ord.unit_price)
+        (ord.quantity * ord.unit_price) * (1-ord.item_discount_amount/100)
         -
         (ord.quantity * prd.cost_price)
         -
-        ord.item_discount_amount
+        ord.tax_amount
         -
         ord.shipping_cost
     ) as profit_amount,
@@ -39,7 +39,7 @@ select
 
     cust.customer_segment
 
-from {{ ref('Orders_table') }} ord
+from {{ ref('Silver_orders_table') }} ord
 
 left join {{ ref('Dim_customer') }} cust
     on ord.customer_id = cust.customer_id
@@ -57,3 +57,4 @@ left join {{ ref('Dim_employee') }} emp
 
 left join {{ ref('Dim_date') }} dat
     on ord.order_date = dat.full_date
+

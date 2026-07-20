@@ -2,7 +2,7 @@
 
 COALESCE(
     TRY_CAST({{ column_name }} AS DATE),
-    DATE '1900-01-01'
+    NULL::Date
 )
 
 {% endmacro %}

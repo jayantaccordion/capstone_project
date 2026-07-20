@@ -38,18 +38,22 @@ models:
   capstone_project:
     # Applies to all files under models/example/
     bronze_layer:
-      +schema: bronze_layer
+      +schema: "{{ env_var('DBT_BRONZE_SCHEMA','BRONZE_LAYER') }}"
       +materialized: 'incremental'
       +unique_key: '_source_file'
       +incremental_strategy: 'merge'
 
     silver_layer:
-      +schema: silver_layer
+      +schema: "{{ env_var('DBT_SILVER_SCHEMA','SILVER_LAYER') }}"
       +materialized: table
 
     gold_layer:
-      +schema: gold_layer
+      +schema: "{{ env_var('DBT_GOLD_SCHEMA','GOLD_LAYER') }}"
       +materialized: table
+
+    Reporting_views:
+      +schema: "{{ env_var('DBT_REPORTING_SCHEMA','REPORTING_LAYER') }}"
+      +materialized: view
 
 snapshots:
   capstone_project:

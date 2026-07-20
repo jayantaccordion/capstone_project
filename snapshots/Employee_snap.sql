@@ -7,13 +7,13 @@
  
 with flattened as (
     select
+        file_last_modified,
+        _loaded_at,
+        _batch_id,
+        _source_file,
         emp.value:employee_id::varchar as employee_id,
-        emp.value as emp_json,
-        _SOURCE_FILE,
-        _LOADED_AT,
-        _BATCH_ID,
-        FILE_LAST_MODIFIED
-    from {{ ref('Employee_data') }},
+        emp.value as emp_json
+    from {{ ref('Bronze_employee_data') }},
     lateral flatten(input => raw_json_payload:employees_data) emp
 )
  

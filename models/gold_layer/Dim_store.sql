@@ -12,4 +12,4 @@ select
     opening_date,
     store_size_category
 
-from {{ ref('Store_table') }}
+from {{ ref('Silver_store_table') }}

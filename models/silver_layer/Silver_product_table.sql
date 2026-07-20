@@ -35,24 +35,24 @@ cleaned_and_cast as (
         coalesce(product_id, 'UNKNOWN_PROD') as product_id,
        
         -- Attribute
-        coalesce(replace(initcap(trim(product_name)), ' ', ''), 'UnknownProduct')      as product_name,
-        coalesce(replace(initcap(trim(category)), ' ', ''), 'UnknownCategory')          as category,
-        coalesce(replace(initcap(trim(subcategory)), ' ', ''), 'UnknownSubcategory')    as subcategory,
-        coalesce(replace(initcap(trim(product_line)), ' ', ''), 'UnknownProductLine')   as product_line,
-        coalesce(initcap(trim(brand)), 'Unknown Brand')            as brand,
-        coalesce(initcap(trim(size)), 'Unknown Size')            as size,
-        coalesce(initcap(trim(color)), 'Unknown Color')            as color,
-        coalesce(upper(trim(supplier_id)), 'UNKNOWN_SUP')         as supplier_id,
+        coalesce(replace(initcap(trim(product_name)), ' ', ''), 'NA')      as product_name,
+        coalesce(replace(initcap(trim(category)), ' ', ''), 'NA')          as category,
+        coalesce(replace(initcap(trim(subcategory)), ' ', ''), 'NA')    as subcategory,
+        coalesce(replace(initcap(trim(product_line)), ' ', ''), 'NA')   as product_line,
+        coalesce(initcap(trim(brand)), 'NA')            as brand,
+        coalesce(initcap(trim(size)), 'NA')            as size,
+        coalesce(initcap(trim(color)), 'NA')            as color,
+        coalesce(upper(trim(supplier_id)), 'NA')         as supplier_id,
  
         -- Description
-        coalesce(trim(short_desc), 'No description available')     as short_description,
-        coalesce(trim(tech_specs), 'No specifications available')  as technical_specs,
+        coalesce(trim(short_desc), 'NA')     as short_description,
+        coalesce(trim(tech_specs), 'NA')  as technical_specs,
         concat(
-            coalesce(initcap(trim(product_name)), 'Unknown Product'),
+            coalesce(initcap(trim(product_name)), 'NA'),
             ' - ',
-            coalesce(trim(short_desc), 'No description available'),
+            coalesce(trim(short_desc), 'NA'),
             ' (Specs: ',
-            coalesce(trim(tech_specs), 'No specifications available'),
+            coalesce(trim(tech_specs), 'NA'),
             ')'
         ) as product_full_description,
  

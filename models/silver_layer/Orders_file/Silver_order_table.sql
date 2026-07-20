@@ -48,10 +48,10 @@ cleaned_orders as (
     select
         --All IDs
         order_id,
-        coalesce(customer_id,'UNKNOWN_CUST') as customer_id,
-        coalesce(employee_id,'UNKNOWN_EMP') as employee_id,
-        coalesce(store_id,'UNKNOWN_STORE') as store_id,
-        coalesce(campaign_id,'UNKNOWN_CAMP') as campaign_id,
+        coalesce(customer_id,'NA') as customer_id,
+        coalesce(employee_id,'NA') as employee_id,
+        coalesce(store_id,'NA') as store_id,
+        coalesce(campaign_id,'NA') as campaign_id,
         
         --Order Attributes
         upper(trim(order_status)) as order_status,
