@@ -1,0 +1,658 @@
+version: 2
+
+models:
+  - name: Silver_customer_table
+    description: >
+      customer model containing cleaned, standardized, validated,
+      and deduplicated customer records derived from the customer snapshot.
+    columns:
+      - name: customer_id
+        description: Unique identifier for the customer.
+        tests:
+          - not_null
+          - unique
+
+      - name: first_name
+        description: Customer's standardized first name.
+        tests:
+          - not_null
+
+      - name: last_name
+        description: Customer's standardized last name.
+        tests:
+          - not_null
+
+      - name: full_name
+        description: Customer's full name constructed from first and last name.
+
+      - name: raw_email
+        description: Original email address received from the source system.
+
+      - name: email
+        description: Cleaned and standardized email address.
+
+      - name: is_email_valid
+        description: Indicates whether the email address is valid.
+        tests:
+          - not_null
+          - accepted_values:
+              arguments:
+                values: [true, false]
+
+      - name: raw_phone
+        description: Original phone number received from the source system.
+
+      - name: phone
+        description: Cleaned and standardized phone number.
+
+      - name: is_phone_valid
+        description: Indicates whether the phone number is valid.
+        tests:
+          - not_null
+          - accepted_values:
+              arguments:
+                values: [true, false]
+
+      - name: registration_date
+        description: Customer registration date.
+
+      - name: birth_date
+        description: Customer birth date.
+
+      - name: last_modified_date
+        description: Date the customer record was last modified.
+
+      - name: last_purchase_date
+        description: Date of the customer's most recent purchase.
+
+      - name: loyalty_tier
+        description: Standardized loyalty tier assigned to the customer.
+        tests:
+          - not_null
+
+      - name: marketing_opt_in
+        description: Indicates whether the customer has opted into marketing communications.
+        tests:
+          - not_null
+          - accepted_values:
+              arguments:
+                values: [true, false]
+
+      - name: occupation
+        description: Customer occupation.
+
+      - name: preferred_payment_method
+        description: Customer's preferred payment method.
+
+      - name: preferred_communication
+        description: Customer's preferred communication channel.
+
+      - name: street
+        description: Customer street address.
+
+      - name: city
+        description: Customer city.
+
+      - name: state
+        description: Customer state or province.
+
+      - name: zip_code
+        description: Customer ZIP or postal code.
+
+      - name: country
+        description: Customer country.
+
+      - name: total_spend_usd
+        description: Customer lifetime spend in USD.
+
+      - name: total_purchases
+        description: Total number of purchases made by the customer.
+        tests:
+          - not_null
+
+      - name: customer_age
+        description: Customer age calculated from the birth date.
+
+      - name: customer_segment
+        description: Customer age segment derived from customer age.
+        tests:
+          - accepted_values:
+              arguments:
+                values:
+                  - Young
+                  - Middle-aged
+                  - Senior
+                  - Unknown
+
+      - name: valid_from
+        description: Timestamp indicating when the snapshot version became valid.
+        tests:
+          - not_null
+
+      - name: valid_to
+        description: Timestamp indicating when the snapshot version expired.
+
+      - name: is_current
+        description: Indicates whether the record is the current active snapshot.
+        tests:
+          - not_null
+          - accepted_values:
+              arguments:
+                values: [true, false]
+
+      - name: _loaded_at
+        description: Timestamp when the record was loaded into the warehouse.
+        tests:
+          - not_null
+
+
+  - name: Silver_employee_table
+    description: >
+      Silver layer employee model containing cleaned, standardized, enriched,
+      and deduplicated employee records.
+    columns:
+      - name: employee_id
+        description: Unique identifier for the employee.
+        tests:
+          - not_null
+          - unique
+
+      - name: first_name
+        description: Employee's standardized first name.
+        tests:
+          - not_null
+
+      - name: last_name
+        description: Employee's standardized last name.
+        tests:
+          - not_null
+
+      - name: full_name
+        description: Employee's full name derived from first and last name.
+
+      - name: email
+        description: Cleaned and standardized employee email address.
+
+      - name: phone
+        description: Cleaned and standardized employee phone number.
+
+      - name: education
+        description: Highest education level attained by the employee.
+
+      - name: certifications
+        description: Certifications held by the employee.
+
+      - name: hire_date
+        description: Standardized employee hire date.
+
+      - name: tenure
+        description: Employee tenure in years.
+
+      - name: date_of_birth
+        description: Standardized employee date of birth.
+
+      - name: last_modified_date
+        description: Date when the employee record was last modified.
+
+      - name: job_role
+        description: Standardized employee job role.
+        tests:
+          - accepted_values:
+              arguments:
+                values:
+                  - Associate
+                  - Manager
+                  - Senior Manager
+                  - Unknown
+
+      - name: performance_rating
+        description: Employee performance rating.
+
+      - name: current_sales
+        description: Current sales achieved by the employee.
+
+      - name: sales_target
+        description: Assigned sales target for the employee.
+
+      - name: target_achievement_percentage
+        description: Percentage of sales target achieved by the employee.
+
+      - name: street
+        description: Employee street address.
+
+      - name: city
+        description: Employee city.
+
+      - name: state
+        description: Employee state or province.
+
+      - name: zip_code
+        description: Employee ZIP or postal code.
+
+      - name: work_location
+        description: Employee work location.
+
+      - name: manager_id
+        description: Identifier of the employee's manager.
+
+      - name: employment_status
+        description: Current employment status of the employee.
+
+      - name: salary
+        description: Employee salary.
+
+      - name: orders_processed
+        description: Total number of orders processed by the employee.
+
+      - name: total_sales_amount
+        description: Total sales amount generated by the employee.
+
+      - name: _loaded_at
+        description: Timestamp when the record was loaded into the warehouse.
+        tests:
+          - not_null
+
+
+  - name: Silver_product_table
+    description: >
+      Silver layer product model containing cleaned, standardized, enriched,
+      and deduplicated product records.
+    columns:
+      - name: product_id
+        description: Unique identifier for the product.
+        tests:
+          - not_null
+          - unique
+
+      - name: product_name
+        description: Standardized product name.
+        tests:
+          - not_null
+
+      - name: category
+        description: Standardized product category.
+        tests:
+          - not_null
+
+      - name: subcategory
+        description: Standardized product subcategory.
+
+      - name: product_line
+        description: Standardized product line.
+
+      - name: brand
+        description: Product brand.
+
+      - name: size
+        description: Product size or variant.
+
+      - name: color
+        description: Product color.
+
+      - name: supplier_id
+        description: Identifier of the product supplier.
+        tests:
+          - not_null
+
+      - name: short_description
+        description: Standardized short description of the product.
+
+      - name: technical_specs
+        description: Technical specifications of the product.
+
+      - name: product_full_description
+        description: Concatenated product description including specifications.
+
+      - name: product_hierarchy
+        description: Product hierarchy in the format Category > Subcategory > Product Line.
+
+      - name: unit_price
+        description: Selling price of the product.
+
+      - name: cost_price
+        description: Cost price of the product.
+
+      - name: stock_quantity
+        description: Current quantity available in inventory.
+        tests:
+          - not_null
+
+      - name: reorder_level
+        description: Inventory threshold for triggering replenishment.
+        tests:
+          - not_null
+
+      - name: profit_margin_percentage
+        description: Percentage profit margin calculated from selling and cost prices.
+
+      - name: is_low_stock
+        description: Indicates whether the current stock quantity is below the reorder level.
+        tests:
+          - not_null
+          - accepted_values:
+              arguments:
+                values: [true, false]
+
+      - name: last_modified_date
+        description: Timestamp when the product record was last modified.
+
+      - name: _loaded_at
+        description: Timestamp when the record was loaded into the warehouse.
+        tests:
+          - not_null
+
+
+  - name: Silver_store_table
+    description: >
+      Silver layer store model containing cleaned, standardized, enriched,
+      and deduplicated store records. 
+    columns:
+      - name: store_id
+        description: Unique identifier for the store.
+        tests:
+          - not_null
+          - unique
+
+      - name: store_name
+        description: Standardized store name.
+        tests:
+          - not_null
+
+      - name: store_type
+        description: Type of store.
+
+      - name: region
+        description: Geographic region where the store operates.
+
+      - name: manager_id
+        description: Identifier of the store manager.
+        tests:
+          - not_null
+
+      - name: is_active
+        description: Indicates whether the store is currently active.
+        tests:
+          - not_null
+          - accepted_values:
+              arguments:
+                values: [true, false]
+
+      - name: opening_date
+        description: Standardized opening date of the store.
+
+      - name: email_cleaned
+        description: Cleaned and standardized store email address.
+
+      - name: phone_cleaned
+        description: Cleaned and standardized store phone number.
+
+      - name: size_sq_ft
+        description: Total store area in square feet.
+        tests:
+          - not_null
+
+      - name: employee_count
+        description: Number of employees assigned to the store.
+        tests:
+          - not_null
+
+      - name: current_sales
+        description: Current sales amount for the store.
+        tests:
+          - not_null
+
+      - name: sales_target
+        description: Sales target assigned to the store.
+        tests:
+          - not_null
+
+      - name: monthly_rent_usd
+        description: Monthly rent amount in USD.
+
+      - name: store_age_years
+        description: Number of years the store has been operational.
+
+      - name: store_size_category
+        description: Size classification of the store.
+        tests:
+          - accepted_values:
+              arguments:
+                values:
+                  - Small
+                  - Medium
+                  - Large
+                  - Unknown
+
+      - name: street
+        description: Store street address.
+
+      - name: city
+        description: Store city.
+
+      - name: state
+        description: Store state or province.
+
+      - name: zip_code
+        description: Store ZIP or postal code.
+
+      - name: country
+        description: Store country.
+
+      - name: standardized_full_address
+        description: Fully standardized store address.
+
+      - name: is_postal_code_valid
+        description: Indicates whether the postal code format is valid.
+        tests:
+          - not_null
+          - accepted_values:
+              arguments:
+                values: [true, false]
+
+      - name: sales_target_achievement_percentage
+        description: Percentage of the sales target achieved by the store.
+
+      - name: revenue_per_sq_ft
+        description: Revenue generated per square foot of store area.
+
+      - name: employee_efficiency
+        description: Revenue generated per employee.
+
+      - name: has_performance_issue
+        description: Indicates whether the store is underperforming against its sales target.
+        tests:
+          - not_null
+          - accepted_values:
+              arguments:
+                values: [true, false]
+
+      - name: _loaded_at
+        description: Timestamp when the record was loaded into the warehouse.
+        tests:
+          - not_null
+
+
+  - name: Silver_orders_table
+    description: >
+      Silver layer orders model containing cleaned, standardized, enriched,
+      and deduplicated order records along with flattened order items.
+    columns:
+      - name: order_id
+        description: Unique identifier for the order.
+        tests:
+          - not_null
+
+      - name: customer_id
+        description: Unique identifier for the customer.
+        tests:
+          - not_null
+
+      - name: employee_id
+        description: Unique identifier for the employee who processed the order.
+        tests:
+          - not_null
+
+      - name: store_id
+        description: Unique identifier for the store fulfilling the order.
+        tests:
+          - not_null
+
+      - name: campaign_id
+        description: Marketing campaign associated with the order.
+
+      - name: product_id
+        description: Unique identifier for the product in the order.
+        tests:
+          - not_null
+
+      - name: quantity
+        description: Quantity of the product ordered.
+        tests:
+          - not_null
+
+      - name: unit_price
+        description: Selling price per unit.
+
+      - name: cost_price
+        description: Cost price per unit.
+
+      - name: item_discount_amount
+        description: Discount percentage applied to the order item.
+
+      - name: created_at
+        description: Timestamp when the order record was created.
+
+      - name: order_date
+        description: Date when the order was placed.
+
+      - name: shipping_date
+        description: Date when the order was shipped.
+
+      - name: delivery_date
+        description: Date when the order was delivered.
+
+      - name: estimated_delivery_date
+        description: Estimated delivery date.
+
+      - name: order_status
+        description: Standardized order status.
+
+      - name: order_source
+        description: Source channel where the order was placed.
+
+      - name: payment_method
+        description: Payment method used for the order.
+
+      - name: shipping_method
+        description: Shipping method selected for the order.
+
+      - name: orders_discount_amount
+        description: Overall discount applied to the order.
+
+      - name: shipping_cost
+        description: Shipping cost charged for the order.
+
+      - name: tax_amount
+        description: Tax amount charged for the order.
+
+      - name: total_amount
+        description: Total order amount.
+
+      - name: billing_street
+        description: Billing street address.
+
+      - name: billing_city
+        description: Billing city.
+
+      - name: billing_state
+        description: Billing state or province.
+
+      - name: billing_zip_code
+        description: Billing ZIP or postal code.
+
+      - name: shipping_street
+        description: Shipping street address.
+
+      - name: shipping_city
+        description: Shipping city.
+
+      - name: shipping_state
+        description: Shipping state or province.
+
+      - name: shipping_zip_code
+        description: Shipping ZIP or postal code.
+
+      - name: order_hour
+        description: Hour of the day when the order was placed.
+
+      - name: order_week
+        description: Week number of the order date.
+
+      - name: order_month
+        description: Month of the order date.
+
+      - name: order_quarter
+        description: Quarter of the order date.
+
+      - name: order_year
+        description: Year of the order date.
+
+      - name: processing_days
+        description: Number of days between order placement and shipment.
+
+      - name: shipping_days
+        description: Number of days between shipment and delivery.
+
+      - name: delivery_status
+        description: Delivery status derived from actual and estimated delivery dates.
+        tests:
+          - accepted_values:
+              arguments:
+                values:
+                  - On Time
+                  - Delayed
+                  - Potentially Delayed
+                  - In Transit
+
+      - name: order_time_of_day
+        description: Time-of-day bucket when the order was placed.
+        tests:
+          - accepted_values:
+              arguments:
+                values:
+                  - Morning
+                  - Afternoon
+                  - Evening
+                  - Night
+
+      - name: line_revenue
+        description: Total revenue for all items in the order.
+
+      - name: line_cost
+        description: Total cost for all items in the order.
+
+      - name: total_items
+        description: Number of distinct products in the order.
+
+      - name: total_quantity
+        description: Total quantity of items in the order.
+
+      - name: calculated_total_amount
+        description: Calculated order amount from order items.
+
+      - name: total_cost
+        description: Total cost of all items in the order.
+
+      - name: total_discount
+        description: Total discount applied across all order items.
+
+      - name: profit_amount
+        description: Profit amount after discounts, shipping costs, taxes, and cost of goods.
+
+      - name: profit_margin_percentage
+        description: Profit margin percentage for the order.
+
+      - name: _loaded_at
+        description: Timestamp when the record was loaded into the warehouse.
+        tests:
+          - not_null
