@@ -4,7 +4,7 @@
       unique_key='customer_id'
     )
 }}
- 
+
 with flattened as (
     select
         file_last_modified,
@@ -15,11 +15,18 @@ with flattened as (
         cust.value as cust_json
     from {{ ref('Bronze_customers_data') }},
     lateral flatten(input => raw_json_payload:customers_data) cust
+),
+
+deduped as (
+    select *
+    from flattened
+    qualify row_number() over (
+        partition by customer_id
+        order by file_last_modified desc, _loaded_at desc
+    ) = 1
 )
- 
-select * 
-from flattened
- 
+
+select *
+from deduped
+
 {% endsnapshot %}
- 
- 
