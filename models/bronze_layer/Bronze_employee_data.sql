@@ -5,7 +5,7 @@ select
     '{{ invocation_id }}'               as _batch_id,
     metadata$file_last_modified         as file_last_modified,
     value                               as raw_json_payload
- 
+  
 from {{ source('AZURE_RAW', 'employee_ext') }}
  
 {% if is_incremental() %}
