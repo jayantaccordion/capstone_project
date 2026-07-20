@@ -11,7 +11,7 @@ sources:
           count: 1
           period: day
         error_after:
-          count: 135
+          count: 2
           period: day
     tables:
       - name: customer_ext
@@ -29,7 +29,7 @@ sources:
               count: 10
               period: day
             error_after:
-              count: 200
+              count: 12
               period: day
       - name: store_ext
         description: "External table for store JSON data."
