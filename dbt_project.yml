@@ -57,7 +57,7 @@ models:
 
 snapshots:
   capstone_project:
-    +schema: snapshot
+    +schema: "{{ env_var('DBT_SNAPSHOT','SNAPSHOT') }}"
     +strategy: timestamp
     +invalidate_hard_deletes: true
     +updated_at: 'file_last_modified'
