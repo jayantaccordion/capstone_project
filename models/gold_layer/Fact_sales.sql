@@ -1,7 +1,7 @@
 select
     {{ dbt_utils.generate_surrogate_key([
         'ord.order_id',
-        'prd.product_id'
+        'prd.product_key',
     ]) }} as sales_key,
     ord.order_id,
 
@@ -43,17 +43,19 @@ from {{ ref('Silver_orders_table') }} ord
 
 left join {{ ref('Dim_customer') }} cust
     on ord.customer_id = cust.customer_id
-   and cust.is_current = true
+    and cust.is_current = true
 
 left join {{ ref('Dim_product') }} prd
     on ord.product_id = prd.product_id
-
+    and prd.is_current = true
 
 left join {{ ref('Dim_store') }} sto
     on ord.store_id = sto.store_id
+    and sto.is_current = true
 
 left join {{ ref('Dim_employee') }} emp
     on ord.employee_id = emp.employee_id
+    and emp.is_current = true
 
 left join {{ ref('Dim_date') }} dat
     on ord.order_date = dat.full_date

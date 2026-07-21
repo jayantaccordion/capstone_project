@@ -6,6 +6,7 @@
 }}
  
 with flattened as (
+    
     select
         file_last_modified,
         _loaded_at,
@@ -20,6 +21,10 @@ with flattened as (
  
 select * 
 from flattened
+qualify row_number() over (
+    partition by product_id
+    order by file_last_modified desc, _loaded_at desc
+) = 1
  
 {% endsnapshot %}
  

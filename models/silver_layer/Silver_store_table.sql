@@ -28,6 +28,15 @@ with flattened_table as (
         sto_json:monthly_rent::varchar                        as rent,
        
         -- Metadata
+        dbt_valid_from as valid_from,
+        coalesce(
+            dbt_valid_to,
+            '9999-12-31'::timestamp
+        ) as valid_to,
+        case
+            when dbt_valid_to is null then true
+            else false
+        end as is_current,
         _loaded_at
     from {{ ref('Store_snap') }}
     where store_id is not null
@@ -39,7 +48,12 @@ cleaned_and_cast as (
        
         -- Attribute
         coalesce(replace(initcap(trim(store_name)), ' ', ''), 'NA') as store_name,
-        coalesce(initcap(trim(store_type)), 'NA') as store_type,
+        case
+            when upper(trim(store_type)) = 'STANDARD'  then 'Standard'
+            when upper(trim(store_type)) = 'FRANCHISE' then 'Franchise'
+            when upper(trim(store_type)) = 'OUTLET'    then 'Outlet'
+            else 'NA'
+        end as store_type,
         coalesce(upper(trim(region)), 'NA')        as region,
         coalesce(upper(trim(manager_id)), 'NA') as manager_id,
         coalesce(is_active, false)                           as is_active,
@@ -48,7 +62,7 @@ cleaned_and_cast as (
         {{ clean_phone('phone') }} as phone_cleaned,
 
         -- Measure
-        size_sq_ft,
+        coalesce(initcap(trim(size_sq_ft)), 'NA')size_sq_ft,
         employee_count,
         current_sales,
         sales_target,
@@ -89,6 +103,9 @@ cleaned_and_cast as (
         end as is_postal_code_valid,
  
         -- Metadata
+        valid_from,
+        valid_to,
+        is_current,
         _loaded_at
     from flattened_table
 ),

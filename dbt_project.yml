@@ -57,7 +57,7 @@ models:
 
 snapshots:
   capstone_project:
-    +schema: snapshot
+    +target_schema: snapshot
     +strategy: timestamp
     +invalidate_hard_deletes: true
     +updated_at: 'file_last_modified'

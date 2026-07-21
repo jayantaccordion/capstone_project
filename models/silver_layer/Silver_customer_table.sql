@@ -77,7 +77,13 @@ cleaned_and_cast as (
         {{ standardize_date('last_purchase_date') }}    as last_purchase_date,
  
         -- Customer Attributes
-        coalesce(upper(trim(loyalty_tier)), 'STANDARD')             as loyalty_tier,
+        case
+            when upper(trim(loyalty_tier)) in ('STANDARD', 'BASIC', 'REGULAR', 'BRONZE') then 'STANDARD'
+            when upper(trim(loyalty_tier)) in ('SILVER', 'SLV') then 'SILVER'
+            when upper(trim(loyalty_tier)) in ('GOLD', 'GLD') then 'GOLD'
+            when upper(trim(loyalty_tier)) in ('PLATINUM', 'PLAT', 'PT') then 'PLATINUM'
+            else 'STANDARD'
+        end as loyalty_tier,
         coalesce(marketing_opt_in, false)                           as marketing_opt_in,
         coalesce(initcap(trim(occupation)),'Unknown')               as occupation,
         coalesce(initcap(trim(preferred_payment_method)),'Unknown') as preferred_payment_method,

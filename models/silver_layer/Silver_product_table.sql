@@ -1,7 +1,7 @@
 with flattened_table as (
     select
         --Product Description
-        prd_json:product_id::varchar         as product_id,
+        trim(prd_json:product_id::varchar)         as product_id,
         prd_json:name::varchar               as product_name,
         prd_json:short_description::varchar  as short_desc,
         prd_json:technical_specs::varchar    as tech_specs,
@@ -26,13 +26,22 @@ with flattened_table as (
         prd_json:supplier_id::varchar        as supplier_id,
         prd_json:last_modified_date as last_modified_date,
        
+        dbt_valid_from as valid_from,
+        coalesce(
+            dbt_valid_to,
+            '9999-12-31'::timestamp
+        ) as valid_to,
+        case
+            when dbt_valid_to is null then true
+            else false
+        end as is_current,
         _loaded_at
     from {{ ref('Product_snap') }}
 ),
  
 cleaned_and_cast as (
     select
-        coalesce(product_id, 'UNKNOWN_PROD') as product_id,
+        product_id,
        
         -- Attribute
         coalesce(replace(initcap(trim(product_name)), ' ', ''), 'NA')      as product_name,
@@ -73,7 +82,10 @@ cleaned_and_cast as (
  
         -- Metadata
         last_modified_date,
-        _loaded_at
+        _loaded_at,
+        valid_from,
+        valid_to,
+        is_current
 
     from flattened_table
 ),
