@@ -1,5 +1,9 @@
 with final_order_table as (
     select
+        {{ dbt_utils.generate_surrogate_key([
+            'ord.order_id',
+            'itm.product_id',
+        ]) }} ord_key,
         ord.*,
         itm.product_id,
         itm.quantity,
@@ -70,3 +74,7 @@ profit_metrics as (
 
 select *
 from profit_metrics
+qualify row_number() over (
+    partition by ord_key
+    order by _loaded_at desc
+) = 1

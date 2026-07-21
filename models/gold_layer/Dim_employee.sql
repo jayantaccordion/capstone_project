@@ -10,6 +10,9 @@ select
     target_achievement_percentage,
     orders_processed,
     total_sales_amount,
-    performance_rating
+    performance_rating,
+    valid_from,
+    valid_to,
+    is_current
 
 from {{ ref('Silver_employee_table') }}

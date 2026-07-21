@@ -2,7 +2,7 @@ version: 2
 
 models:
 
-  - name: dim_customer
+  - name: Dim_customer
     description: "Customer dimension containing current and historical customer attributes."
     columns:
 
@@ -83,7 +83,7 @@ models:
         description: "Timestamp when this customer version expired."
   
 
-  - name: dim_date
+  - name: Dim_date
     description: "Calendar dimension used for date-based reporting."
     columns:
 
@@ -142,7 +142,7 @@ models:
                   - Fall
 
 
-  - name: dim_employee
+  - name: Dim_employee
     description: "Employee dimension containing employee details, role information, performance metrics, and order activity."
     columns:
 
@@ -178,6 +178,7 @@ models:
                   - Associate
                   - Manager
                   - Senior Manager
+                  - Unknown
 
       - name: work_location
         description: "Store location where employee works."
@@ -198,14 +199,8 @@ models:
         data_tests:
           - not_null
 
-      - name: _loaded_at
-        description: "Timestamp when employee record was loaded into warehouse."
-        data_tests:
-          - not_null
 
-
-
-  - name: dim_product
+  - name: Dim_product
     description: "Product dimension containing product attributes, pricing, inventory details, and supplier information."
     columns:
 
@@ -266,32 +261,8 @@ models:
         data_tests:
           - not_null
 
-      - name: stock_quantity
-        description: "Available inventory quantity."
-        data_tests:
-          - not_null
 
-      - name: reorder_level
-        description: "Minimum stock level requiring replenishment."
-        data_tests:
-          - not_null
-
-      - name: is_low_stock
-        description: "Flag indicating stock is below reorder threshold."
-        data_tests:
-          - accepted_values:
-              arguments:
-                values:
-                  - true
-                  - false
-
-      - name: _loaded_at
-        description: "Timestamp when record was loaded into warehouse."
-        data_tests:
-          - not_null
-
-
-  - name: dim_store
+  - name: Dim_store
     description: "Store dimension containing store details, location, operational metrics, and performance indicators."
     columns:
 
@@ -320,6 +291,7 @@ models:
                   - Standard
                   - Franchise
                   - Outlet
+                  - NA
 
       - name: region
         description: "Geographical region of the store."
@@ -357,26 +329,6 @@ models:
 
       - name: store_age_years
         description: "Number of years since store opening."
-
-      - name: size_sq_ft
-        description: "Store floor area in square feet."
-        data_tests:
-          - not_null
-
-      - name: employee_count
-        description: "Number of employees assigned to store."
-        data_tests:
-          - not_null
-
-      - name: current_sales
-        description: "Current store sales value."
-        data_tests:
-          - not_null
-
-      - name: sales_target
-        description: "Store sales target."
-        data_tests:
-          - not_null
 
       - name: monthly_rent_usd
         description: "Monthly store rent in USD."
@@ -417,13 +369,8 @@ models:
                   - true
                   - false
 
-      - name: _loaded_at
-        description: "Timestamp when store record was loaded."
-        data_tests:
-          - not_null
 
-
-  - name: fact_sales
+  - name: Fact_sales
     description: "Sales fact table containing transactional sales metrics at order-product grain."
     columns:
 

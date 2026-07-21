@@ -30,6 +30,15 @@ with flattened_table as (
 
         emp_json:certifications                     as certifications,
 
+        dbt_valid_from as valid_from,
+        coalesce(
+            dbt_valid_to,
+            '9999-12-31'::timestamp
+        ) as valid_to,
+        case
+            when dbt_valid_to is null then true
+            else false
+        end as is_current,
         _loaded_at
     from {{ ref('Employee_snap') }}
     where employee_id is not null
@@ -93,6 +102,9 @@ cleaned_and_cast as (
         employment_status,
         salary,
 
+        valid_from,
+        valid_to,
+        is_current,
         _loaded_at
 
     from flattened_table

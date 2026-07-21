@@ -1,5 +1,5 @@
 {{ create_external_table('store_ext', 'store_data') }}
- 
+
 select
     metadata$filename                   as _source_file,
     current_timestamp()::timestamp_ntz  as _loaded_at,

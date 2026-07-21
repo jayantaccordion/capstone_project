@@ -1,7 +1,7 @@
 with flattened_orders as (
     select
         --All IDs
-        ord_json:order_id::varchar                    as order_id,
+        trim(ord_json:order_id::varchar)                    as order_id,
         ord_json:customer_id::varchar                 as customer_id,
         ord_json:employee_id::varchar                 as employee_id,
         ord_json:store_id::varchar                    as store_id,
@@ -41,7 +41,6 @@ with flattened_orders as (
         _loaded_at
 
     from {{ ref('Order_snap') }}
-    where ord_json:order_id is not null
 ),
 
 cleaned_orders as (

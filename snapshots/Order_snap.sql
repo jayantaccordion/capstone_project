@@ -20,6 +20,10 @@ with flattened as (
  
 select * 
 from flattened
+qualify row_number() over (
+    partition by order_id
+    order by file_last_modified desc, _loaded_at desc
+) = 1
  
 {% endsnapshot %}
  

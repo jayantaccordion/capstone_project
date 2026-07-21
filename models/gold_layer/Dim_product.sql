@@ -9,6 +9,9 @@ select
     size,
     unit_price,
     cost_price,
-    supplier_id
+    supplier_id,
+    valid_from,
+    valid_to,
+    is_current
 
 from {{ ref('Silver_product_table') }}
